@@ -1,7 +1,9 @@
 (ns advent-of-code-2021.day-1
   (:require [clojure.java.io :as io]))
 
-(defn puzzle-1 []
+(defn puzzle-1
+  "Answer: 1121"
+  []
   (with-open [lines (->> "day-1.txt"
                          io/resource
                          io/reader)]
@@ -13,7 +15,9 @@
            (filter true?)
            count))))
 
-(defn puzzle-2 []
+(defn puzzle-2
+  "Answer: 1065"
+  []
   (with-open [lines (->> "day-1.txt"
                          io/resource
                          io/reader)]

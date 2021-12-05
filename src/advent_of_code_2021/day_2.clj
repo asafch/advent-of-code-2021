@@ -2,7 +2,9 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]))
 
-(defn puzzle-1 []
+(defn puzzle-1
+  "Answer: 1947824"
+  []
   (with-open [lines (->> "day-2.txt"
                          io/resource
                          io/reader)]
@@ -25,7 +27,9 @@
                             (+ vertical correction))))
           (* horizontal vertical))))))
 
-(defn puzzle-2 []
+(defn puzzle-2
+  "Answer: 1813062561"
+  []
   (with-open [lines (->> "day-2.txt"
                          io/resource
                          io/reader)]

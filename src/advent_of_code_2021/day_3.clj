@@ -11,7 +11,9 @@
         epsilon      (Integer/valueOf (str/join epsilon-bits) 2)]
     (* gamma epsilon)))
 
-(defn puzzle-1 []
+(defn puzzle-1
+  "Answer: 1092896"
+  []
   (with-open [lines (->> "day-3.txt"
                          io/resource
                          io/reader)]
@@ -40,7 +42,9 @@
   (filterv #(= max-digit (nth % index))
            diagnostics))
 
-(defn puzzle-2 []
+(defn puzzle-2
+  "Answer: 4672151"
+  []
   (with-open [lines (->> "day-3.txt"
                          io/resource
                          io/reader)]
