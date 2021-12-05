@@ -1,0 +1,5 @@
+{:linters {:unresolved-symbol   {:level :error}
+           :unused-referred-var {:level :error}
+           :unused-binding      {:exclude-destructured-keys-in-fn-args true
+                                 :level                                :error}
+           :unused-namespace    {:level :error}}}
