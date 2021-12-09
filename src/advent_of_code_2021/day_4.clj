@@ -75,9 +75,9 @@
       (loop [draws  draws
              boards boards]
         (if (seq draws)
-          (let [draw             (first draws)
-                boards-with-draw (mapv (partial mark-draw-on-board draw)
-                                       boards)
+          (let [draw              (first draws)
+                boards-with-draw  (mapv (partial mark-draw-on-board draw)
+                                        boards)
                 incomplete-boards (remove get-winning-board boards-with-draw)]
             (if (seq incomplete-boards)
               (recur (rest draws)
