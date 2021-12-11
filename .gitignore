@@ -27,3 +27,4 @@ pom.xml.asc
 .cpcache/
 *.iml
 .idea
+.clj-kondo/.cache

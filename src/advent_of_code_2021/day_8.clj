@@ -1,6 +1,5 @@
 (ns advent-of-code-2021.day-8
   (:require [clojure.java.io :as io]
-            [clojure.set :as s]
             [clojure.string :as str]))
 
 (def ^:private special-length? #{2 3 4 7})
@@ -45,7 +44,6 @@
         initial-encoding (make-initial-encoder sorted-signals)
         patterns-5       (filter #(= 5 (count %)) sorted-signals)
         patterns-6       (filter #(= 6 (count %)) sorted-signals)]
-    (loop [])
     (as-> initial-encoding decoder
           (assoc decoder 9 (make-decoder (decode-by-pattern (nth sorted-signals 2) ;4
                                                             patterns-6
