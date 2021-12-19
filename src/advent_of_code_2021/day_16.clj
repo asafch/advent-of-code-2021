@@ -119,15 +119,59 @@
         :else (let [operator-params (decode-operator-params stream)
                     rest-of-stream  (:rest-of-stream operator-params)
                     num-of-packets  (:remaining-packets operator-params)]
-                (decode-length-type-1-operator operator version rest-of-stream num-of-packets))))))
+                (decode-length-type-1-operator version operator rest-of-stream num-of-packets))))))
+
+(defn- sum-packet-versions [tree]
+  (let [operator (:operator tree)
+        version  (:version tree)]
+    (if (= 4 operator)
+      version
+      (+ version
+         (transduce (map sum-packet-versions)
+                    +
+                    (:value tree))))))
 
 (defn puzzle-1
-  "Answer: ?"
+  "Answer: 974"
   []
   (with-open [content (->> "day-16.txt"
                            io/resource
                            io/reader)]
     (let [lines (line-seq content)
           bits  (parse lines)]
-      (decode bits))))
+      (sum-packet-versions (decode bits)))))
 
+(declare bits-eval)
+
+(defn- eval-reduce
+  [packets op]
+  (reduce op (map bits-eval packets)))
+
+(defn- eval-binary-op [[p1 p2] op]
+  (if (op (bits-eval p1) (bits-eval p2))
+    1
+    0))
+
+(defn- bits-eval [tree]
+  (let [operator (:operator tree)
+        value    (:value tree)]
+    (case operator
+      0 (eval-reduce value +)
+      1 (eval-reduce value *)
+      2 (eval-reduce value min)
+      3 (eval-reduce value max)
+      4 value
+      5 (eval-binary-op value >)
+      6 (eval-binary-op value <)
+      7 (eval-binary-op value =)
+      (throw (Exception. "should not happen")))))
+
+(defn puzzle-2
+  "Answer: 180616437720"
+  []
+  (with-open [content (->> "day-16.txt"
+                           io/resource
+                           io/reader)]
+    (let [lines (line-seq content)
+          bits  (parse lines)]
+      (bits-eval (decode bits)))))
