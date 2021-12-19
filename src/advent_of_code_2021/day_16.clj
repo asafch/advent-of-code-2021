@@ -31,40 +31,39 @@
       acc)))
 
 (defn- decode-version [stream]
-  (bits->int (subvec stream 0 3) #_(take 3 stream)))
+  (bits->int (subvec stream 0 3)))
 
 (defn- decode-operator [stream]
-  (bits->int (subvec stream 3 6) #_(take 3 (drop 3 stream))))
+  (bits->int (subvec stream 3 6)))
 
 (defn- chop-headers [stream]
-  (subvec stream 6)
-  #_(drop 6 stream))
+  (subvec stream 6))
 
 (defn- decode-literal [stream version operator]
-  (loop [bits      [] #_'()
+  (loop [bits      []
          stream    stream
          bits-read 0]
-    (let [sub-packet     (subvec stream 0 5) #_(take 5 stream)
+    (let [sub-packet     (subvec stream 0 5)
           sub-packet-ver (first sub-packet)]
       (if (zero? sub-packet-ver)
-        (let [bits (into bits (subvec sub-packet 1)) #_(concat bits (rest sub-packet))]
+        (let [bits (into bits (subvec sub-packet 1))]
           {:version        version
            :operator       operator
            :value          (bits->int bits)
            :bits-read      (+ 5 bits-read)
-           :rest-of-stream (subvec stream 0 5) #_(drop 5 stream)})
-        (recur (into bits (subvec sub-packet 1)) #_(concat bits (rest sub-packet))
-               (subvec stream 5) #_(drop 5 stream)
+           :rest-of-stream (subvec stream 5)})
+        (recur (into bits (subvec sub-packet 1))
+               (subvec stream 5)
                (+ 5 bits-read))))))
 
 (defn- decode-operator-params [stream]
   (let [length-type    (first stream)
-        rest-of-stream (subvec stream 1) #_(rest stream)]
+        rest-of-stream (subvec stream 1)]
     (if (zero? length-type)
-      {:remaining-bits (bits->int (subvec rest-of-stream 0 15) #_(take 15 rest-of-stream))
-       :rest-of-stream (subvec rest-of-stream 15) #_(drop 15 rest-of-stream)}
-      {:remaining-packets (bits->int (subvec rest-of-stream 0 11) #_(take 11 rest-of-stream))
-       :rest-of-stream    (subvec rest-of-stream 11) #_(drop 11 rest-of-stream)})))
+      {:remaining-bits (bits->int (subvec rest-of-stream 0 15))
+       :rest-of-stream (subvec rest-of-stream 15)}
+      {:remaining-packets (bits->int (subvec rest-of-stream 0 11))
+       :rest-of-stream    (subvec rest-of-stream 11)})))
 
 (defn- literal? [op-code]
   (= 4 op-code))
@@ -115,8 +114,8 @@
                                                remaining-bits  (:remaining-bits operator-params)]
                                            (decode-length-type-0-operator version
                                                                           operator
-                                                                          (subvec rest-of-stream 0 remaining-bits) #_(take remaining-bits rest-of-stream)
-                                                                          (subvec rest-of-stream remaining-bits) #_(drop remaining-bits rest-of-stream)))
+                                                                          (subvec rest-of-stream 0 remaining-bits)
+                                                                          (subvec rest-of-stream remaining-bits)))
         :else (let [operator-params (decode-operator-params stream)
                     rest-of-stream  (:rest-of-stream operator-params)
                     num-of-packets  (:remaining-packets operator-params)]
